@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Untitled</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sab's Home Coleccionable</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos Generales */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #1a1a2e; /* Fondo oscuro */
+            margin: 0;
+            padding: 20px;
+            color: #e0e0e0;
+            line-height: 1.6;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            overflow-x: hidden; /* Evita scroll horizontal */
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #2a2a4a; /* Contenedor oscuro */
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5); /* Sombra más profunda */
+            border: 1px solid #4a4a6e;
+        }
+
+        h1 {
+            color: #e6e6fa; /* Texto claro */
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 700;
+            cursor: pointer; /* Para indicar que es interactivo */
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 10px rgba(230, 230, 250, 0.4);
+        }
+        
+        /* Estilo para el nuevo título */
+        h1#app-title-login, h1#client-app-title {
+            font-size: 1.8em; /* Más pequeño */
+        }
+        h1#admin-panel-title {
+            font-size: 1.8em; /* Más pequeño */
+        }
+
+
+        .user-info {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: #3a3a5e; /* Fondo más claro */
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+            border: 1px solid #5a5a7e;
+        }
+
+        .user-info p {
+            margin: 0;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #e0e0e0;
+        }
+
+        /* Panel de entrega para cliente */
+        #delivery-panel {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            background-color: #4a4a6a;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.4), 0 5px 20px rgba(0, 0, 0, 0.4);
+            border: 1px solid #6a6a8e;
+            min-height: 120px; /* Para que siempre tenga un tamaño */
+            align-items: center;
+        }
+
+        #delivery-panel p {
+            color: #cccccc;
+            font-style: italic;
+        }
+
+        /* La Grilla Única del Álbum */
+        .album-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(75px, 1fr)); /* 6-8 columnas en desktop, 4-5 en móvil */
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+
+        /* Slot de figurita base */
+        .sticker-slot {
+            width: 100%;
+            padding-bottom: 100%; /* Cuadrado */
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #b0b0d0;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2), 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Estilos de estado para los slots */
+        .sticker-slot.locked {
+            background-color: #2c2c4c; /* Oscuro y apagado */
+            border: 1px solid #4c4c6c;
+            opacity: 0.6;
+            cursor: not-allowed;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .sticker-slot.unlocked {
+            background-color: #3c3c6c; /* Un poco más brillante, listo para recibir */
+            border: 1px dashed #7a7ac0;
+            opacity: 0.9;
+            cursor: grab;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5), 0 0 15px rgba(122, 122, 192, 0.3); /* Efecto de luz */
+        }
+        .sticker-slot.unlocked.drag-over {
+            background-color: #5a5ac0; /* Destacado al arrastrar sobre él */
+            border-color: #fff;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5), 0 0 25px rgba(255, 255, 255, 0.5);
+        }
+        .sticker-slot.unlocked.wrong-slot {
+            background-color: #c04c4c; /* Rojo para slot incorrecto */
+            border-color: #ff0000;
+        }
+        .sticker-slot.unlocked.already-filled {
+            background-color: #c07a4c; /* Naranja para slot ya lleno */
+            border-color: #ff8c00;
+        }
+
+
+        .sticker-slot.filled {
+            background-color: #2e8b57; /* Verde vibrante cuando está lleno */
+            border: 2px solid #5af096;
+            box-shadow: 0 0 20px rgba(90, 240, 150, 0.6), inset 0 0 8px rgba(0, 0, 0, 0.5);
+            opacity: 1;
+        }
+        .sticker-slot.filled img {
+            border: none; /* Asegurar que la imagen no tenga un borde adicional */
+        }
+
+        .sticker-slot img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 7px;
+            z-index: 1; /* Imagen sobre el número */
+        }
+        
+        /* El número de la figurita */
+        .sticker-slot span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0; /* Por debajo de la imagen */
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.7); /* Blanco semitransparente */
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+            pointer-events: none; /* No interfiere con clics o drags */
+        }
+
+        /* Estilos para las figuritas "entregadas" en el panel superior */
+        .delivered-sticker-wrapper {
+            perspective: 1000px; /* Para el efecto 3D de giro */
+            width: 90px;
+            height: 90px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .delivered-sticker-inner {
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            position: relative;
+        }
+
+        .delivered-sticker-wrapper.flipped .delivered-sticker-inner {
+            transform: rotateY(180deg);
+        }
+
+        .delivered-sticker-front, .delivered-sticker-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden; /* Oculta la parte trasera */
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .delivered-sticker-front {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); /* Color de sobre */
+            border: 2px solid #8e2de2;
+            z-index: 2;
+        }
+        .delivered-sticker-front span {
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+            opacity: 0.9;
+        }
+
+        .delivered-sticker-back {
+            background-color: #f7dc6f; /* Fondo amarillo */
+            border: 2px solid #f1c40f;
+            transform: rotateY(180deg); /* Voltear para que quede visible al girar */
+            overflow: hidden;
+        }
+        .delivered-sticker-back img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+        /* Estilos para arrastrar */
+        .draggable-sticker {
+            width: 90px; /* Mismo tamaño que el wrapper */
+            height: 90px;
+            border-radius: 8px;
+            margin: 0; /* Ya contenido en el wrapper */
+            cursor: grab;
+            position: relative;
+            overflow: hidden;
+            background-color: transparent; /* para que solo se vea la imagen */
+        }
+        .draggable-sticker img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        /* Secciones de Repetidas y Intercambio */
+        .repeated-stickers-section {
+            background-color: #3a3a5e;
+            border: 1px solid #5a5a7e;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 25px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3), 0 5px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .repeated-stickers-section h2 {
+            color: #e6e6fa;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .repeated-stickers-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            min-height: 80px;
+            align-items: center;
+            border: 1px dashed #7a7ac0;
+            border-radius: 8px;
+            padding: 10px;
+            background-color: #2c2c4c;
+        }
+        .repeated-stickers-list .draggable-sticker { /* Estilo para las repetidas */
+             margin: 5px;
+             border: 2px solid #f1c40f;
+             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+
+        .interchange-button, .login-button {
+            display: block;
+            width: fit-content;
+            margin: 20px auto 0;
+            padding: 12px 25px;
+            background-color: #6a11cb; /* Morado */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .interchange-button:hover, .login-button:hover {
+            background-color: #8e2de2; /* Morado más claro */
+            transform: translateY(-2px);
+        }
+
+        .login-button.logout {
+            background-color: #dc3545;
+        }
+        .login-button.logout:hover {
+            background-color: #c82333;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .album-grid {
+                grid-template-columns: repeat(auto-fit, minmax(65px, 1fr));
+                gap: 8px;
+            }
+            .delivered-sticker-wrapper, .draggable-sticker {
+                width: 75px;
+                height: 75px;
+            }
+        }
+        @media (max-width: 480px) {
+            .album-grid {
+                grid-template-columns: repeat(auto-fit, minmax(55px, 1fr));
+                gap: 5px;
+            }
+            .delivered-sticker-wrapper, .draggable-sticker {
+                width: 65px;
+                height: 65px;
+            }
+        }
+
+        /* Estilos para el login general */
+        .login-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            text-align: center;
+            background-color: #1a1a2e;
+            color: #e0e0e0;
+        }
+
+        .login-screen h2 {
+            margin-bottom: 25px;
+            color: #e6e6fa;
+            font-size: 1.8em;
+            text-shadow: 0 0 8px rgba(230, 230, 250, 0.3);
+        }
+
+        .login-screen input {
+            padding: 12px 15px;
+            margin: 10px 0;
+            border: 1px solid #4a4a6a;
+            border-radius: 8px;
+            width: 250px;
+            font-size: 1em;
+            text-align: center;
+            background-color: #2a2a4a;
+            color: #e0e0e0;
+            box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.4);
+        }
+        .login-screen input::placeholder {
+            color: #a0a0c0;
+        }
+        .login-screen input:focus {
+            outline: none;
+            border-color: #8e2de2;
+            box-shadow: 0 0 10px #8e2de2;
+        }
+
+        .login-screen input[type="password"] {
+            display: none; /* Oculto por defecto */
+        }
+
+        .login-screen button {
+            background-color: #2575fc;
+        }
+        .login-screen button:hover {
+            background-color: #6a11cb;
+        }
+
+        #error-message {
+            color: #ff6b6b;
+            margin-top: 10px;
+            font-weight: 600;
+            text-shadow: 0 0 5px rgba(255, 107, 107, 0.5);
+        }
+
+        /* Estilos para el panel de admin (inicialmente oculto) */
+        #admin-panel {
+            display: none; /* Oculto por defecto */
+            max-width: 900px;
+            margin: 40px auto;
+            background-color: #2a2a4a;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #4a4a6e;
+            color: #e0e0e0;
+        }
+
+        #admin-panel h1 {
+            color: #ff6b6b; /* Rojo para admin */
+            text-shadow: 0 0 10px rgba(255, 107, 107, 0.4);
+        }
+
+        .admin-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #e0e0e0;
+        }
+
+        .admin-form input[type="tel"], .admin-form input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #4a4a6a;
+            border-radius: 5px;
+            font-size: 1em;
+            background-color: #3a3a5e;
+            color: #e0e0e0;
+        }
+        .admin-form input::placeholder {
+            color: #a0a0c0;
+        }
+        .admin-form input:focus {
+            outline: none;
+            border-color: #ff6b6b;
+            box-shadow: 0 0 10px #ff6b6b;
+        }
+
+        .admin-form button {
+            background-color: #ff6b6b; /* Rojo para acciones de admin */
+            margin-top: 10px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            color: white;
+            border: none;
+            font-size: 1.1em;
+        }
+        .admin-form button:hover {
+            background-color: #e04a4a;
+            transform: translateY(-2px);
+        }
+        .admin-form button#load-client-album-btn {
+            background-color: #2575fc;
+        }
+        .admin-form button#load-client-album-btn:hover {
+            background-color: #6a11cb;
+        }
+
+
+        .admin-client-info-display {
+            background-color: #3a3a5e;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+            border: 1px solid #5a5a7e;
+        }
+        .admin-client-info-display h3 {
+            color: #e6e6fa;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .admin-client-info-display p {
+            margin: 5px 0;
+            color: #cccccc;
+        }
+        .admin-client-info-display ul {
+            list-style: none;
+            padding: 0;
+        }
+        .admin-client-info-display ul li {
+            background-color: #2a2a4a;
+            margin-bottom: 5px;
+            padding: 8px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #4a4a6a;
+        }
+        .admin-client-info-display ul li span {
+            font-weight: 600;
+            color: #e6e6fa;
+        }
+        .admin-client-info-display ul li .count {
+            color: #5af096; /* Verde para el conteo */
+            font-size: 0.9em;
+        }
+
+        #admin-actions-section {
+            background-color: #3a3a5e;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+            border: 1px solid #5a5a7e;
+        }
+        #admin-actions-section h2 {
+            color: #e6e6fa;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        /* ADMIN STICKER SELECTION GRID */
+        #admin-sticker-selection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            gap: 8px;
+            background-color: #2c2c4c;
+            border: 1px dashed #7a7ac0;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+        .admin-sticker-item {
+            width: 100%;
+            padding-bottom: 100%;
+            position: relative;
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            border: 2px solid transparent;
+            transition: all 0.2s ease-in-out;
+        }
+        .admin-sticker-item img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .admin-sticker-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        .admin-sticker-item.selected {
+            border-color: #5af096;
+            box-shadow: 0 0 15px rgba(90, 240, 150, 0.6);
+        }
+        .admin-sticker-item.max-delivered {
+            opacity: 0.5;
+            cursor: not-allowed;
+            border-color: #c04c4c;
+        }
+        .admin-sticker-item .lock-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.8em;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+            pointer-events: none; /* No bloquear clics */
+            z-index: 10;
+        }
+        .admin-sticker-item .sticker-number {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            font-size: 0.7em;
+            color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 0 4px;
+            border-radius: 3px;
+            z-index: 5;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Pantalla de Login General (para clientes y admin) -->
+    <div id="login-screen" class="login-screen">
+        <h1 id="app-title-login">Sab's Home Coleccionable</h1>
+        <h2>Ingresa a tu Álbum</h2>
+        <input type="tel" id="phone-input" placeholder="Tu número de teléfono (ej: 5551234567)" pattern="[0-9]{10}" title="Por favor, introduce 10 dígitos numéricos">
+        <input type="password" id="admin-password-input" placeholder="Contraseña de Admin (doble clic en el título)" style="display:none;">
+        <button id="access-album-btn" class="login-button">Acceder a mi Álbum</button>
+        <p id="error-message" style="display:none;"></p>
+    </div>
+
+    <!-- Contenedor principal del álbum (se mostrará después del login) -->
+    <div id="album-container" class="container" style="display:none;">
+        <h1 id="client-app-title">Sab's Home Coleccionable</h1>
+        
+        <div class="user-info">
+            <p>¡Hola, <span id="userName"></span>!</p>
+            <p>Teléfono: <span id="userPhone"></span></p>
+            <button id="logout-btn" class="login-button logout">Cerrar Sesión</button>
+        </div>
+
+        <!-- Panel de entrega para figuritas recién obtenidas -->
+        <div id="delivery-panel">
+            <p id="noNewStickersMessage">No tienes figuritas nuevas por colocar. ¡Haz una compra!</p>
+            <!-- Aquí irán las figuritas con el efecto de giro -->
+        </div>
+
+        <!-- Grilla Única del Álbum -->
+        <div class="album-grid">
+            <!-- Los 32 slots de figuritas se generarán con JS -->
+        </div>
+
+        <!-- Sección de figuritas repetidas -->
+        <div class="repeated-stickers-section">
+            <h2>Mis Figuritas Repetidas</h2>
+            <div id="repeatedStickersList" class="repeated-stickers-list">
+                <p id="noRepeatedStickersMessage">No tienes figuritas repetidas para intercambiar.</p>
+            </div>
+            <button class="interchange-button" id="goToInterchanges">Intercambiar Figuritas</button>
+        </div>
+    </div>
+
+    <!-- Panel de Administración (inicialmente oculto) -->
+    <div id="admin-panel">
+        <h1 id="admin-panel-title">Panel de Administración</h1>
+        <div class="admin-form">
+            <label for="admin-client-phone">Número de Teléfono del Cliente:</label>
+            <input type="tel" id="admin-client-phone" placeholder="Ej: 5551234567" pattern="[0-9]{10}" title="Por favor, introduce 10 dígitos numéricos">
+            <label for="admin-client-name-input">Nombre del Cliente:</label>
+            <input type="text" id="admin-client-name-input" placeholder="Ej: Juan Pérez">
+            <button id="load-client-album-btn">Cargar Álbum del Cliente</button>
+            
+            <div id="admin-client-info-display" class="admin-client-info-display" style="display:none;">
+                <h3>Gestionando: <span id="admin-client-name"></span> (<span id="admin-client-phone-display"></span>)</h3>
+                <p>Figuritas por colocar: <span id="admin-pending-place-count">0</span></p>
+                <p>Figuritas repetidas: <span id="admin-repeated-count">0</span></p>
+                <h4>Registro de Entregas por Figurita:</h4>
+                <ul id="admin-delivery-log">
+                    <li><p>No hay figuritas entregadas a este cliente aún.</p></li>
+                </ul>
+            </div>
+
+            <div id="admin-actions-section">
+                <h2>Acciones del Administrador</h2>
+                <p>Selecciona 4 figuritas para entregar al cliente:</p>
+                <div id="admin-sticker-selection-grid">
+                    <!-- Las 32 figuritas seleccionables se cargarán aquí -->
+                </div>
+                <button id="admin-give-selected-stickers-btn">Entregar Figuritas Seleccionadas</button>
+                <button id="admin-reset-album-btn" style="background-color:#c0392b;">Resetear Álbum de Cliente</button>
+            </div>
+            <button id="admin-logout-btn" class="login-button logout">Cerrar Sesión Admin</button>
+        </div>
+    </div>
+
+    <script>
+        // --- CONSTANTES Y CONFIGURACIÓN ---
+        const ADMIN_PASSWORD = "(0)86$()/12"; // ¡Tu contraseña de admin!
+        const LOCAL_STORAGE_PREFIX = "sabsHome_"; // Prefijo actualizado
+        const TOTAL_ALBUM_SLOTS = 32; // ¡Nueva cantidad de slots!
+
+        // --- Base de datos de Figuritas (Metadatos) ---
+        // Asegúrate de que los 'slotId' coincidan con los 'data-slot-id' en la grilla final.
+        // ¡REEMPLAZA LAS URLs de las imágenes con tus propias rutas relativas o URLs directas!
+        const ALL_STICKERS_METADATA = {
+            // --- TUS 6 IMÁGENES EJEMPLO ---
+            "sandwich-1": { name: "Tabla al Toque", img: "images/1.jpg", slotId: "slot-1" },
+            "sandwich-2": { name: "Doble Burger con Papas", img: "images/2.jpg", slotId: "slot-2" },
+            "sandwich-3": { name: "Bife Burger", img: "images/3.jpg", slotId: "slot-3" },
+            "sandwich-4": { name: "Tabla Cantata", img: "images/4.jpg", slotId: "slot-4" },
+            "sandwich-5": { name: "Tabla Mix (24000)", img: "images/5.jpg", slotId: "slot-5" },
+            "sandwich-6": { name: "Burritos con Papas", img: "images/6_new.jpg", slotId: "slot-6" }, // <-- IMAGEN 6 CORREGIDA
+            
+            // --- EL RESTO DE LAS FIGURITAS SIGUEN CON PLACEHOLDERS (DEBES REEMPLAZARLAS TAMBIÉN) ---
+            "sandwich-7": { name: "Pizza Mesa Completa", img: "images/7.jpg", slotId: "slot-7" },
+            "sandwich-8": { name: "Tablita Pogo", img: "images/8.jpg", slotId: "slot-8" },
+
+            "compartir-1": { name: "Tabla Poulet", img: "images/9.jpg", slotId: "slot-9" },
+            "compartir-2": { name: "Triple Burger con Papas", img: "images/10.jpg", slotId: "slot-10" },
+            "compartir-3": { name: "Tabla Gulp!", img: "images/11.jpg", slotId: "slot-11" },
+            "compartir-4": { name: "Sandwich Milanesa Completo", img: "images/12.jpg", slotId: "slot-12" },
+            "compartir-5": { name: "Sandwich Lomito Completo", img: "images/13.jpg", slotId: "slot-13" },
+            "compartir-6": { name: "Mini Shawarminas", img: "images/14.jpg", slotId: "slot-14" },
+            "compartir-7": { name: "Tabla para Compartir", img: "images/15.jpg", slotId: "slot-15" },
+            "compartir-8": { name: "Tablita al Palo", img: "images/16.jpg", slotId: "slot-16" },
+
+            "individual-1": { name: "Burger Completa", img: "images/17.jpg", slotId: "slot-17" },
+            "individual-2": { name: "Tabla América", img: "images/18.jpg", slotId: "slot-18" },
+            "individual-3": { name: "Tabla Flash", img: "images/19.jpg", slotId: "slot-19" },
+            "individual-4": { name: "Burger de Shawarma", img: "images/20.jpg", slotId: "slot-20" },
+            "individual-5": { name: "Tabla Amigos", img: "images/21.jpg", slotId: "slot-21" },
+            "individual-6": { name: "Tablita de Fútbol", img: "images/22.jpg", slotId: "slot-22" },
+            "individual-7": { name: "Tabla Full", img: "images/23.jpg", slotId: "slot-23" },
+            "individual-8": { name: "Mila a Caballo", img: "images/24.jpg", slotId: "slot-24" },
+
+            "motivacional-1": { name: "Lomo Mexicano", img: "images/25.jpg", slotId: "slot-25" },
+            "motivacional-2": { name: "Pizza 4 Sabores", img: "images/26.jpg", slotId: "slot-26" },
+            "motivacional-3": { name: "Casilda Chapulín", img: "images/27.jpg", slotId: "slot-27" },
+            "motivacional-4": { name: "Torinos Ranch", img: "images/28.jpg", slotId: "slot-28" },
+            "motivacional-5": { name: "Tabla Mohicana", img: "images/29.jpg", slotId: "slot-29" },
+            "motivacional-6": { name: "Tabla Cuarenta y Cinco", img: "images/30.jpg", slotId: "slot-30" },
+            "motivacional-7": { name: "Tango", img: "images/31.jpg", slotId: "slot-31" },
+            "motivacional-8": { name: "Sándwich de Bondiola", img: "images/32.jpg", slotId: "slot-32" },
+        };
+        const ALL_STICKER_IDS = Object.keys(ALL_STICKERS_METADATA);
+        const MAX_DELIVERIES_PER_STICKER = 2; // Máximo de veces que se puede entregar una figurita al mismo cliente
+
+        // --- Selectores DOM ---
+        const loginScreen = document.getElementById('login-screen');
+        const phoneInput = document.getElementById('phone-input');
+        const adminPasswordInput = document.getElementById('admin-password-input');
+        const accessAlbumBtn = document.getElementById('access-album-btn');
+        const errorMessage = document.getElementById('error-message');
+        const albumContainer = document.getElementById('album-container');
+        const userNameSpan = document.getElementById('userName');
+        const userPhoneSpan = document.getElementById('userPhone');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        const deliveryPanel = document.getElementById('delivery-panel');
+        const noNewStickersMessage = document.getElementById('noNewStickersMessage');
+        const albumGrid = document.querySelector('.album-grid');
+        const repeatedStickersList = document.getElementById('repeatedStickersList');
+        const noRepeatedStickersMessage = document.getElementById('noRepeatedStickersMessage');
+        const goToInterchangesBtn = document.getElementById('goToInterchanges');
+        
+        // Admin Panel Selectors
+        const adminPanel = document.getElementById('admin-panel');
+        const adminClientPhoneInput = document.getElementById('admin-client-phone');
+        const adminClientNameInput = document.getElementById('admin-client-name-input'); // Nuevo input para el nombre
+        const loadClientAlbumBtn = document.getElementById('load-client-album-btn');
+        const adminClientInfoDisplay = document.getElementById('admin-client-info-display');
+        const adminClientNameSpan = document.getElementById('admin-client-name');
+        const adminClientPhoneDisplay = document.getElementById('admin-client-phone-display');
+        const adminPendingPlaceCount = document.getElementById('admin-pending-place-count');
+        const adminRepeatedCount = document.getElementById('admin-repeated-count');
+        const adminDeliveryLogUl = document.getElementById('admin-delivery-log');
+        const adminStickerSelectionGrid = document.getElementById('admin-sticker-selection-grid'); // Nueva mini-cuadrícula
+        const adminGiveSelectedStickersBtn = document.getElementById('admin-give-selected-stickers-btn'); // Botón para entregar seleccionadas
+        const adminResetAlbumBtn = document.getElementById('admin-reset-album-btn');
+        const adminLogoutBtn = document.getElementById('admin-logout-btn');
+
+        // --- Variables de Estado Global ---
+        let currentLoggedInPhone = null; // Teléfono del usuario actual logeado
+        let currentAdminClientAlbumData = null; // Datos del cliente que el admin está viendo/editando
+        let selectedStickersForDelivery = []; // Sticker IDs seleccionados por el admin para entregar
+
+        // --- Funciones Auxiliares Generales ---
+        function showMessage(msg, isError = false) {
+            errorMessage.textContent = msg;
+            errorMessage.style.color = isError ? '#ff6b6b' : '#5af096';
+            errorMessage.style.display = 'block';
+        }
+
+        function hideMessage() {
+            errorMessage.style.display = 'none';
+        }
+
+        // Obtener el álbum de un cliente desde LocalStorage
+        function getClientAlbum(phoneNumber) {
+            const data = localStorage.getItem(LOCAL_STORAGE_PREFIX + phoneNumber);
+            return data ? JSON.parse(data) : {
+                name: `Cliente ${phoneNumber}`, // Nombre por defecto
+                phoneNumber: phoneNumber,
+                deliveryLog: {},    // { stickerId: count, ... } Registro de cuántas veces se ha entregado una figurita
+                unlockedSlots: [],  // Lista de slotId que el admin ha activado
+                filledSlots: [],    // Lista de { stickerId: "X", slotId: "Y" } que el usuario ha puesto
+                newStickersToPlace: [], // Lista de stickerId obtenidas pero no arrastradas (en el delivery panel)
+                repeatedStickers: [],   // Lista de stickerId repetidas
+            };
+        }
+
+        // Guardar el álbum de un cliente en LocalStorage
+        function saveClientAlbum(albumData) {
+            localStorage.setItem(LOCAL_STORAGE_PREFIX + albumData.phoneNumber, JSON.stringify(albumData));
+        }
+
+        // --- Renderizado del Álbum del Cliente ---
+
+        // Genera todos los slots de la grilla del álbum
+        function generateAlbumGrid() {
+            albumGrid.innerHTML = ''; // Limpiar cualquier slot existente
+            for (let i = 1; i <= TOTAL_ALBUM_SLOTS; i++) {
+                const slotDiv = document.createElement('div');
+                slotDiv.className = 'sticker-slot locked'; // Todos empiezan bloqueados
+                slotDiv.setAttribute('data-slot-id', `slot-${i}`);
+                slotDiv.innerHTML = `<span>${i}</span>`;
+                albumGrid.appendChild(slotDiv);
+            }
+        }
+
+        // Renderiza el estado actual del álbum de un cliente
+        function renderClientAlbumState(albumData) {
+            // Limpiar todo antes de renderizar
+            const allStickerSlots = albumGrid.querySelectorAll('.sticker-slot');
+            allStickerSlots.forEach(slot => {
+                slot.innerHTML = `<span>${slot.dataset.slotId.replace('slot-', '')}</span>`; // Restablecer número
+                slot.classList.remove('filled', 'locked', 'unlocked');
+                slot.classList.add('locked'); // Por defecto, todo bloqueado
+            });
+            deliveryPanel.innerHTML = '';
+            noNewStickersMessage.style.display = 'block';
+            repeatedStickersList.innerHTML = '';
+            noRepeatedStickersMessage.style.display = 'block';
+
+            if (!albumData) {
+                userNameSpan.textContent = 'Usuario';
+                userPhoneSpan.textContent = 'No disponible';
+                return;
+            }
+
+            userNameSpan.textContent = albumData.name || 'Cliente';
+            userPhoneSpan.textContent = albumData.phoneNumber;
+
+            // 1. Renderizar casillas desbloqueadas (que el admin permitió llenar)
+            albumData.unlockedSlots.forEach(slotId => {
+                const slot = document.querySelector(`.sticker-slot[data-slot-id="${slotId}"]`);
+                if (slot) {
+                    slot.classList.remove('locked');
+                    slot.classList.add('unlocked');
+                }
+            });
+
+            // 2. Renderizar figuritas ya puestas en el álbum
+            albumData.filledSlots.forEach(item => {
+                const slot = document.querySelector(`.sticker-slot[data-slot-id="${item.slotId}"]`);
+                const stickerData = ALL_STICKERS_METADATA[item.stickerId];
+                if (slot && stickerData) {
+                    const img = document.createElement('img');
+                    img.src = stickerData.img;
+                    img.alt = stickerData.name;
+                    slot.innerHTML = `<span>${item.slotId.replace('slot-', '')}</span>`; // Mantener el número de slot
+                    slot.appendChild(img);
+                    slot.classList.remove('unlocked', 'locked');
+                    slot.classList.add('filled');
+                }
+            });
+
+            // 3. Renderizar figuritas en el panel de entrega (newStickersToPlace)
+            if (albumData.newStickersToPlace && albumData.newStickersToPlace.length > 0) {
+                noNewStickersMessage.style.display = 'none';
+                albumData.newStickersToPlace.forEach(stickerId => {
+                    const stickerData = ALL_STICKERS_METADATA[stickerId];
+                    if (stickerData) {
+                        const wrapperDiv = document.createElement('div');
+                        wrapperDiv.className = 'delivered-sticker-wrapper';
+                        wrapperDiv.setAttribute('data-sticker-id', stickerId); // ID de la figurita real
+                        wrapperDiv.setAttribute('data-target-slot-id', stickerData.slotId); // Slot al que pertenece
+                        
+                        const innerDiv = document.createElement('div');
+                        innerDiv.className = 'delivered-sticker-inner';
+
+                        const frontDiv = document.createElement('div');
+                        frontDiv.className = 'delivered-sticker-front';
+                        frontDiv.innerHTML = `<span>Toca para revelar</span>`;
+
+                        const backDiv = document.createElement('div');
+                        backDiv.className = 'delivered-sticker-back';
+                        const stickerImg = document.createElement('img');
+                        stickerImg.src = stickerData.img;
+                        stickerImg.alt = stickerData.name;
+                        backDiv.appendChild(stickerImg);
+
+                        innerDiv.appendChild(frontDiv);
+                        innerDiv.appendChild(backDiv);
+                        wrapperDiv.appendChild(innerDiv);
+                        deliveryPanel.appendChild(wrapperDiv);
+
+                        // Evento para voltear la figurita
+                        wrapperDiv.addEventListener('click', () => {
+                            if (!wrapperDiv.classList.contains('flipped')) {
+                                wrapperDiv.classList.add('flipped');
+                                setTimeout(() => { // Después de voltear, hacerlo arrastrable
+                                    const newDraggableDiv = document.createElement('div');
+                                    newDraggableDiv.className = 'draggable-sticker';
+                                    newDraggableDiv.setAttribute('data-sticker-id', stickerId);
+                                    newDraggableDiv.setAttribute('data-target-slot-id', stickerData.slotId);
+                                    newDraggableDiv.setAttribute('draggable', true);
+                                    const imgClone = stickerImg.cloneNode(true);
+                                    newDraggableDiv.appendChild(imgClone);
+
+                                    wrapperDiv.replaceWith(newDraggableDiv); // Reemplazar el wrapper por la figurita arrastrable
+                                }, 600); // Coincide con la duración de la transición
+                            }
+                        });
+                    }
+                });
+            }
+
+            // 4. Renderizar figuritas repetidas
+            if (albumData.repeatedStickers && albumData.repeatedStickers.length > 0) {
+                noRepeatedStickersMessage.style.display = 'none';
+                albumData.repeatedStickers.forEach(stickerId => {
+                    const stickerData = ALL_STICKERS_METADATA[stickerId];
+                    if (stickerData) {
+                        const stickerDiv = document.createElement('div');
+                        stickerDiv.className = 'draggable-sticker'; // Las repetidas son arrastrables para "intercambiar"
+                        stickerDiv.setAttribute('data-sticker-id', stickerId);
+                        const stickerImg = document.createElement('img');
+                        stickerImg.src = stickerData.img;
+                        stickerImg.alt = stickerData.name;
+                        stickerDiv.appendChild(stickerImg);
+                        repeatedStickersList.appendChild(stickerDiv);
+                    }
+                });
+            }
+        }
+
+        // --- Lógica de Login (Cliente y Admin) ---
+        const appTitleLogin = document.getElementById('app-title-login'); // Título de la pantalla de login
+        let isAttemptingAdminLogin = false; // Estado para el doble clic
+
+        // Doble clic en el título para intentar login de admin
+        appTitleLogin.addEventListener('dblclick', (event) => {
+            // Asegurarse de que el doble clic es directamente en el H1
+            if (event.target === appTitleLogin) {
+                if (loginScreen.style.display === 'flex') { // Solo si estamos en la pantalla de login
+                    isAttemptingAdminLogin = true;
+                    adminPasswordInput.style.display = 'block'; // Mostrar el campo de contraseña
+                    phoneInput.value = ''; // Limpiar el teléfono
+                    phoneInput.placeholder = "Número de cliente (opcional)";
+                    showMessage('Introduce la contraseña de administrador y haz clic en "Acceder".', false);
+                }
+            }
+        });
+
+        accessAlbumBtn.addEventListener('click', () => {
+            const phone = phoneInput.value.trim();
+            const adminPassword = adminPasswordInput.value.trim();
+
+            if (isAttemptingAdminLogin) {
+                if (adminPassword === ADMIN_PASSWORD) {
+                    hideMessage();
+                    loginScreen.style.display = 'none';
+                    adminPanel.style.display = 'block';
+                    // Reiniciar el estado de admin
+                    isAttemptingAdminLogin = false;
+                    adminPasswordInput.style.display = 'none';
+                    adminPasswordInput.value = ''; // Limpiar la contraseña
+                    phoneInput.placeholder = "Tu número de teléfono (ej: 5551234567)";
+                    phoneInput.value = ''; // Limpiar el teléfono de admin
+                    currentLoggedInPhone = null; // Asegurarse de que no hay cliente loggeado al iniciar admin
+                    renderAdminStickerSelectionGrid(); // Cargar la cuadrícula de selección de figuritas del admin
+                } else {
+                    showMessage('Contraseña de administrador incorrecta.', true);
+                    // Mantener el campo de contraseña visible para que pueda reintentar
+                    adminPasswordInput.style.display = 'block';
+                }
+            } else { // Intento de login de cliente
+                if (!/^\d{10}$/.test(phone)) {
+                    showMessage('Por favor, introduce un número de teléfono de 10 dígitos.', true);
+                    return;
+                }
+                hideMessage();
+                currentLoggedInPhone = phone;
+                const albumData = getClientAlbum(currentLoggedInPhone);
+                renderClientAlbumState(albumData);
+                loginScreen.style.display = 'none';
+                albumContainer.style.display = 'block';
+            }
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            currentLoggedInPhone = null;
+            albumContainer.style.display = 'none';
+            loginScreen.style.display = 'flex';
+            phoneInput.value = '';
+            adminPasswordInput.value = '';
+            adminPasswordInput.style.display = 'none';
+            isAttemptingAdminLogin = false; // Resetear estado de admin
+            phoneInput.placeholder = "Tu número de teléfono (ej: 5551234567)";
+            hideMessage();
+        });
+
+        adminLogoutBtn.addEventListener('click', () => {
+            currentAdminClientAlbumData = null;
+            selectedStickersForDelivery = []; // Limpiar selección de figuritas
+            adminPanel.style.display = 'none';
+            loginScreen.style.display = 'flex';
+            phoneInput.value = '';
+            adminPasswordInput.value = '';
+            adminPasswordInput.style.display = 'none';
+            isAttemptingAdminLogin = false; // Resetear estado de admin
+            phoneInput.placeholder = "Tu número de teléfono (ej: 5551234567)";
+            hideMessage();
+        });
+
+        // --- Lógica Drag and Drop (Cliente) ---
+        let draggedStickerElement = null; // El elemento arrastrable
+
+        document.addEventListener('dragstart', (e) => {
+            // Solo permitir arrastrar si es una figurita del panel de entrega o una repetida
+            const sticker = e.target.closest('.draggable-sticker');
+            if (sticker) {
+                draggedStickerElement = sticker;
+                e.dataTransfer.setData('sticker-id', sticker.dataset.stickerId);
+                // e.dataTransfer.setData('target-slot-id', sticker.dataset.targetSlotId); // Esto puede venir de un delivered-sticker-wrapper
+                e.target.style.opacity = '0.5';
+            }
+        });
+
+        document.addEventListener('dragend', (e) => {
+            if (draggedStickerElement) {
+                draggedStickerElement.style.opacity = '1';
+                draggedStickerElement = null;
+            }
+        });
+
+        albumGrid.addEventListener('dragover', (e) => {
+            e.preventDefault(); // Permite soltar
+            const targetSlot = e.target.closest('.sticker-slot');
+            if (!targetSlot || !draggedStickerElement) {
+                return;
+            }
+            
+            // Limpiar estilos de arrastre previos
+            albumGrid.querySelectorAll('.sticker-slot').forEach(slot => {
+                slot.classList.remove('drag-over', 'wrong-slot', 'already-filled');
+            });
+
+            const stickerId = draggedStickerElement.dataset.stickerId;
+            const targetSlotIdForSticker = ALL_STICKERS_METADATA[stickerId].slotId;
+
+            // Verificar si el slot de destino está desbloqueado y no está lleno
+            const isTargetSlotUnlockedAndEmpty = targetSlot.classList.contains('unlocked') && !targetSlot.classList.contains('filled');
+
+            if (isTargetSlotUnlockedAndEmpty) {
+                if (targetSlot.dataset.slotId === targetSlotIdForSticker) {
+                    targetSlot.classList.add('drag-over'); // Slot correcto y desbloqueado/vacío
+                } else {
+                    targetSlot.classList.add('wrong-slot'); // Slot incorrecto
+                }
+            } else if (targetSlot.classList.contains('filled')) {
+                targetSlot.classList.add('already-filled'); // Ya está lleno
+            } else if (targetSlot.classList.contains('locked')) {
+                targetSlot.classList.add('wrong-slot'); // Bloqueado
+            }
+        });
+
+        albumGrid.addEventListener('dragleave', (e) => {
+            albumGrid.querySelectorAll('.sticker-slot').forEach(slot => {
+                slot.classList.remove('drag-over', 'wrong-slot', 'already-filled');
+            });
+        });
+
+        albumGrid.addEventListener('drop', (e) => {
+            e.preventDefault();
+            albumGrid.querySelectorAll('.sticker-slot').forEach(slot => {
+                slot.classList.remove('drag-over', 'wrong-slot', 'already-filled');
+            });
+
+            if (draggedStickerElement) {
+                const stickerId = draggedStickerElement.dataset.stickerId;
+                const droppedSlot = e.target.closest('.sticker-slot');
+                
+                if (!droppedSlot) { // Soltado fuera de un slot
+                    return;
+                }
+
+                const targetSlotIdForSticker = ALL_STICKERS_METADATA[stickerId].slotId;
+
+                // 1. Validar que el slot esté desbloqueado y vacío
+                if (!droppedSlot.classList.contains('unlocked') || droppedSlot.classList.contains('filled')) {
+                    alert('¡Esta casilla no está disponible para colocar la figurita!');
+                    return;
+                }
+
+                // 2. Validar que la figurita corresponda a la casilla
+                if (droppedSlot.dataset.slotId !== targetSlotIdForSticker) {
+                    alert('¡Esta figurita no va en esta casilla!');
+                    return;
+                }
+                
+                // Si todo es válido, actualizamos el álbum
+                const albumData = getClientAlbum(currentLoggedInPhone);
+                
+                // Remover del panel de entrega (newStickersToPlace) o de repetidas
+                let removedFromNew = false;
+                const indexInNew = albumData.newStickersToPlace.indexOf(stickerId);
+                if (indexInNew > -1) {
+                    albumData.newStickersToPlace.splice(indexInNew, 1);
+                    removedFromNew = true;
+                }
+
+                if (!removedFromNew) {
+                    const indexInRepeated = albumData.repeatedStickers.indexOf(stickerId);
+                    if (indexInRepeated > -1) {
+                         albumData.repeatedStickers.splice(indexInRepeated, 1);
+                    } else {
+                         // Algo raro pasó, la figurita no estaba en el inventario ni repetidas
+                         alert("Error interno: la figurita no se encontró en el inventario.");
+                         return;
+                    }
+                }
+                
+                // Añadir a filledSlots
+                albumData.filledSlots.push({ stickerId: stickerId, slotId: droppedSlot.dataset.slotId });
+                
+                saveClientAlbum(albumData); // Guardar cambios en LocalStorage
+                renderClientAlbumState(albumData); // Re-renderizar la UI
+                
+                alert(`¡Has colocado la figurita ${ALL_STICKERS_METADATA[stickerId].name}!`);
+                checkAlbumCompletion(albumData); // Verificar si se completó algo
+            }
+        });
+
+        // --- Lógica de Intercambios (Botón) ---
+        goToInterchangesBtn.addEventListener('click', () => {
+            const albumData = getClientAlbum(currentLoggedInPhone);
+            
+            const repeatedStickerNames = albumData.repeatedStickers.map(id => ALL_STICKERS_METADATA[id].name);
+            const missingStickerNames = [];
+            for (let i = 1; i <= TOTAL_ALBUM_SLOTS; i++) {
+                const slotId = `slot-${i}`;
+                // Si el slot está desbloqueado pero NO está lleno
+                const isUnlocked = albumData.unlockedSlots.includes(slotId);
+                const isFilled = albumData.filledSlots.some(item => item.slotId === slotId);
+                
+                if (isUnlocked && !isFilled) {
+                    const stickerIdForSlot = Object.keys(ALL_STICKERS_METADATA).find(key => ALL_STICKERS_METADATA[key].slotId === slotId);
+                    if (stickerIdForSlot) {
+                        missingStickerNames.push(ALL_STICKERS_METADATA[stickerIdForSlot].name);
+                    } else {
+                        missingStickerNames.push(`Figurita desconocida para ${slotId}`);
+                    }
+                }
+            }
+
+            let whatsappMessage = `¡Hola! Soy ${albumData.name} (${albumData.phoneNumber}).\n\n`;
+            
+            whatsappMessage += `Mis figuritas repetidas:\n`;
+            if (repeatedStickerNames.length > 0) {
+                whatsappMessage += repeatedStickerNames.join(', ') + '\n';
+            } else {
+                whatsappMessage += 'No tengo figuritas repetidas.\n';
+            }
+
+            whatsappMessage += `\nMis figuritas faltantes (desbloqueadas):\n`;
+            if (missingStickerNames.length > 0) {
+                whatsappMessage += missingStickerNames.join(', ') + '\n';
+            } else {
+                whatsappMessage += '¡No me falta ninguna figurita desbloqueada!\n';
+            }
+
+            const whatsappURL = `https://wa.me/TU_NUMERO_DE_WHATSAPP_AQUI?text=${encodeURIComponent(whatsappMessage)}`;
+            // ¡REEMPLAZA 'TU_NUMERO_DE_WHATSAPP_AQUI' con tu número de teléfono con código de país, ej: 5491112345678!
+            
+            window.open(whatsappURL, '_blank');
+        });
+
+        // --- Lógica del Panel de Administración ---
+
+        loadClientAlbumBtn.addEventListener('click', () => {
+            const phone = adminClientPhoneInput.value.trim();
+            const clientName = adminClientNameInput.value.trim(); // Obtener el nombre del cliente
+
+            if (!/^\d{10}$/.test(phone)) {
+                adminClientInfoDisplay.style.display = 'none';
+                showMessage('Por favor, introduce un número de teléfono de 10 dígitos.', true);
+                return;
+            }
+            hideMessage();
+
+            currentAdminClientAlbumData = getClientAlbum(phone);
+            if (clientName) { // Si se proporcionó un nombre, actualizarlo
+                currentAdminClientAlbumData.name = clientName;
+                saveClientAlbum(currentAdminClientAlbumData); // Guardar el nombre actualizado
+            } else {
+                // Si no se proporcionó nombre, cargar el que ya exista o el default
+                adminClientNameInput.value = currentAdminClientAlbumData.name;
+            }
+
+            renderAdminClientInfo();
+            renderAdminStickerSelectionGrid(); // Actualizar la mini-cuadrícula de selección
+        });
+
+        function renderAdminClientInfo() {
+            if (!currentAdminClientAlbumData) {
+                adminClientInfoDisplay.style.display = 'none';
+                return;
+            }
+            adminClientInfoDisplay.style.display = 'block';
+            adminClientNameSpan.textContent = currentAdminClientAlbumData.name;
+            adminClientPhoneDisplay.textContent = currentAdminClientAlbumData.phoneNumber;
+            adminPendingPlaceCount.textContent = currentAdminClientAlbumData.newStickersToPlace.length;
+            adminRepeatedCount.textContent = currentAdminClientAlbumData.repeatedStickers.length;
+
+            adminDeliveryLogUl.innerHTML = ''; // Limpiar log
+            const deliveredStickers = Object.keys(currentAdminClientAlbumData.deliveryLog);
+            if (deliveredStickers.length > 0) {
+                deliveredStickers.forEach(stickerId => {
+                    const count = currentAdminClientAlbumData.deliveryLog[stickerId];
+                    const stickerName = ALL_STICKERS_METADATA[stickerId] ? ALL_STICKERS_METADATA[stickerId].name : `ID Desconocido (${stickerId})`;
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `<span>${stickerName}</span> <span class="count">${count} entregas</span>`;
+                    adminDeliveryLogUl.appendChild(listItem);
+                });
+            } else {
+                adminDeliveryLogUl.innerHTML = '<li><p>No hay figuritas entregadas a este cliente aún.</p></li>';
+            }
+        }
+
+        // --- Mini-cuadrícula de selección de figuritas para el admin ---
+        function renderAdminStickerSelectionGrid() {
+            adminStickerSelectionGrid.innerHTML = ''; // Limpiar cuadrícula
+            selectedStickersForDelivery = []; // Resetear selección al cargar un cliente o recargar la cuadrícula
+
+            if (!currentAdminClientAlbumData) {
+                adminStickerSelectionGrid.innerHTML = '<p style="text-align:center; color:#ccc;">Carga un cliente para seleccionar figuritas.</p>';
+                return;
+            }
+
+            ALL_STICKER_IDS.forEach(stickerId => {
+                const stickerData = ALL_STICKERS_METADATA[stickerId];
+                if (!stickerData) return;
+
+                const deliveryCount = currentAdminClientAlbumData.deliveryLog[stickerId] || 0;
+                
+                const stickerItem = document.createElement('div');
+                stickerItem.className = 'admin-sticker-item';
+                stickerItem.setAttribute('data-sticker-id', stickerId);
+
+                const img = document.createElement('img');
+                img.src = stickerData.img;
+                img.alt = stickerData.name;
+                stickerItem.appendChild(img);
+
+                const stickerNumberSpan = document.createElement('span');
+                stickerNumberSpan.className = 'sticker-number';
+                stickerNumberSpan.textContent = stickerData.slotId.replace('slot-', '');
+                stickerItem.appendChild(stickerNumberSpan);
+
+                // Añadir iconos de candado según el número de entregas
+                if (deliveryCount === 1) {
+                    const lockIcon = document.createElement('span');
+                    lockIcon.className = 'lock-icon';
+                    lockIcon.innerHTML = '&#128274;'; // Unicode para candado cerrado
+                    stickerItem.appendChild(lockIcon);
+                } else if (deliveryCount >= MAX_DELIVERIES_PER_STICKER) {
+                    const lockIcon1 = document.createElement('span');
+                    lockIcon1.className = 'lock-icon';
+                    lockIcon1.style.left = '40%';
+                    lockIcon1.innerHTML = '&#128274;';
+                    stickerItem.appendChild(lockIcon1);
+                    const lockIcon2 = document.createElement('span');
+                    lockIcon2.className = 'lock-icon';
+                    lockIcon2.style.left = '60%';
+                    lockIcon2.innerHTML = '&#128274;';
+                    stickerItem.appendChild(lockIcon2);
+
+                    stickerItem.classList.add('max-delivered'); // Deshabilitar si ya se entregó 2 veces
+                    stickerItem.style.cursor = 'not-allowed';
+                }
+
+                stickerItem.addEventListener('click', () => {
+                    if (stickerItem.classList.contains('max-delivered')) {
+                        alert('Esta figurita ya ha sido entregada el máximo de veces a este cliente.');
+                        return;
+                    }
+
+                    const index = selectedStickersForDelivery.indexOf(stickerId);
+                    if (index > -1) {
+                        selectedStickersForDelivery.splice(index, 1);
+                        stickerItem.classList.remove('selected');
+                    } else {
+                        if (selectedStickersForDelivery.length < 4) {
+                            selectedStickersForDelivery.push(stickerId);
+                            stickerItem.classList.add('selected');
+                        } else {
+                            alert('Solo puedes seleccionar hasta 4 figuritas para entregar.');
+                        }
+                    }
+                });
+
+                adminStickerSelectionGrid.appendChild(stickerItem);
+            });
+        }
+
+        adminGiveSelectedStickersBtn.addEventListener('click', () => {
+            if (!currentAdminClientAlbumData) {
+                alert('Primero carga el álbum de un cliente.');
+                return;
+            }
+            if (selectedStickersForDelivery.length === 0) {
+                alert('Por favor, selecciona al menos una figurita para entregar.');
+                return;
+            }
+
+            const albumData = currentAdminClientAlbumData;
+            let stickersActuallyGiven = 0;
+
+            selectedStickersForDelivery.forEach(stickerId => {
+                const deliveryCount = albumData.deliveryLog[stickerId] || 0;
+
+                if (deliveryCount < MAX_DELIVERIES_PER_STICKER) {
+                    // Si el slot no está desbloqueado, lo desbloqueamos por primera vez
+                    if (!albumData.unlockedSlots.includes(ALL_STICKERS_METADATA[stickerId].slotId)) {
+                        albumData.unlockedSlots.push(ALL_STICKERS_METADATA[stickerId].slotId);
+                    }
+                    
+                    // Verificar si la figurita ya está en el álbum
+                    const isAlreadyFilled = albumData.filledSlots.some(item => item.stickerId === stickerId);
+
+                    if (isAlreadyFilled) {
+                        // Si ya la tiene en el álbum, se la damos como repetida
+                        albumData.repeatedStickers.push(stickerId);
+                    } else {
+                        // Si no la tiene en el álbum, se la damos como nueva para colocar
+                        albumData.newStickersToPlace.push(stickerId);
+                    }
+
+                    // Actualizar el contador de entregas
+                    albumData.deliveryLog[stickerId] = deliveryCount + 1;
+                    stickersActuallyGiven++;
+                } else {
+                    console.log(`Figurita ${stickerId} no entregada porque ya alcanzó el límite.`);
+                }
+            });
+            
+            saveClientAlbum(albumData); // Guardar cambios
+            currentAdminClientAlbumData = albumData; // Actualizar los datos del cliente en vista
+            renderAdminClientInfo(); // Re-renderizar la info del admin
+            renderAdminStickerSelectionGrid(); // Re-renderizar la cuadrícula de selección para actualizar candados
+
+            alert(`Se entregaron ${stickersActuallyGiven} figuritas al inventario de ${albumData.name}.`);
+            selectedStickersForDelivery = []; // Limpiar la selección después de entregar
+        });
+
+
+        adminResetAlbumBtn.addEventListener('click', () => {
+            if (!currentAdminClientAlbumData || !confirm('¿Estás seguro de que quieres RESETEAR COMPLETAMENTE el álbum de este cliente? Esto no se puede deshacer.')) {
+                return;
+            }
+
+            const clientPhone = currentAdminClientAlbumData.phoneNumber;
+            localStorage.removeItem(LOCAL_STORAGE_PREFIX + clientPhone);
+            currentAdminClientAlbumData = getClientAlbum(clientPhone); // Cargar el álbum vacío
+            renderAdminClientInfo();
+            renderAdminStickerSelectionGrid(); // Actualizar la mini-cuadrícula después del reset
+            adminClientNameInput.value = ''; // Limpiar el campo de nombre del admin
+            alert(`Álbum del cliente ${clientPhone} ha sido reseteado.`);
+        });
+
+
+        // --- Verificación de finalización de álbum/sección ---
+        function checkAlbumCompletion(albumData) {
+            let allCompleted = true;
+            let filledCount = 0;
+
+            for (let i = 1; i <= TOTAL_ALBUM_SLOTS; i++) {
+                const slotId = `slot-${i}`;
+                const isUnlocked = albumData.unlockedSlots.includes(slotId);
+                const isFilled = albumData.filledSlots.some(item => item.slotId === slotId);
+
+                if (isUnlocked && isFilled) {
+                    filledCount++;
+                } else if (isUnlocked && !isFilled) {
+                    allCompleted = false; // Hay slots desbloqueados pero no llenos
+                }
+            }
+
+            if (filledCount === TOTAL_ALBUM_SLOTS) { // Si todas las 32 figuritas están puestas
+                alert('¡FELICIDADES! ¡Has completado todas las figuritas del álbum! ¡Reclama tu GRAN premio!');
+                // Aquí podrías guardar que el álbum ha sido completado para evitar dar el premio dos veces
+            }
+        }
+
+
+        // --- Carga Inicial de la Aplicación ---
+        document.addEventListener('DOMContentLoaded', () => {
+            generateAlbumGrid(); // Generar los slots del álbum al inicio
+
+            loginScreen.style.display = 'flex';
+            albumContainer.style.display = 'none';
+            adminPanel.style.display = 'none';
+            hideMessage(); // Ocultar mensajes de error al inicio
+            // No renderizar la cuadrícula de admin aquí, se hace al iniciar sesión como admin
+        });
+
+    </script>
+</body>
+</html>
+    
+  </body>
+  
+</html>
