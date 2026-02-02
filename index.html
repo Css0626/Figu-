@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Untitled</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sab's Home Coleccionable</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --p: #6a11cb; --s: #2575fc; --bg: #1a1a2e; --c: #2a2a4a; --a: #f1c40f; --d: #ff4757; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); color: #e0e0e0; margin: 0; padding: 10px; user-select: none; }
+        .container { max-width: 800px; margin: 0 auto; background: var(--c); padding: 15px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h1 { text-align: center; color: #fff; cursor: pointer; margin: 10px 0; font-size: 1.2em;box-shadow: 0 10px 30px rgba(0,0,0,5); }
+        .screen { display: none; } .active-screen { display: block; }
+        .btn { background: var(--p); color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; text-align: center; display: inline-block; margin: 5px 0; }
+        .btn:hover { background: var(--s); transform: translateY(-2px); }
+        .btn-sm { padding: 5px 10px; font-size: 12px; }
+        
+        /* Login */
+        .login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 70vh; }
+        .login-screen input { padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #4a4a6a; background: #222244; color: white; width: 260px; text-align: center; }
+
+        /* Instrucciones */
+        .instructions-text { text-align: center; font-size: 12px; color: #aaa; margin-bottom: 5px; }
+
+        /* Inventario */
+        #delivery-panel { background: #3a3a5e; padding: 15px; border-radius: 12px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; min-height: 100px; border: 2px dashed #5a5a7e; }
+        .sticker-card { width: 80px; height: 80px; position: relative; cursor: pointer; perspective: 1000px; }
+        .sticker-inner { width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flipped .sticker-inner { transform: rotateY(180deg); }
+        .sticker-front, .sticker-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        
+        /* CAMBIO: Agrandé la fuente a 18px */
+        .sticker-front { background: linear-gradient(135deg, var(--p), var(--s)); border: 2px solid #fff; font-size: 18px; font-weight: bold; color: white; text-align: center; padding: 5px; }
+        
+        .sticker-back { background: #fff; transform: rotateY(180deg); overflow: hidden; }
+        .sticker-back img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* CAMBIO: Quité el transform scale para que no se mueva, agregué box-shadow */
+        .selected-to-paste { outline: 4px solid var(--a); z-index: 10; border-radius: 8px; box-shadow: 0 0 15px var(--a); }
+
+        /* Grilla del Álbum */
+        .album-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; margin-top: 20px; }
+        .slot { width: 100%; padding-bottom: 100%; position: relative; background: #1a1a2e; border-radius: 8px; border: 1px solid #444; overflow: hidden; cursor: pointer; }
+        .slot img.preview { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.15; filter: grayscale(1); display: none; }
+        .slot.unlocked img.preview { display: block; }
+        .slot img.placed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; }
+        
+        /* CAMBIO: Agrandé la fuente a 24px y mejoré contraste */
+        .slot-num { position: absolute; bottom: 5px; right: 8px; font-weight: bold; font-size: 24px; color: rgba(255,255,255,0.5); z-index: 1; }
+
+        /* Repetidas */
+        .repeated-section { margin-top: 20px; background: #222244; padding: 15px; border-radius: 12px; }
+        .repeated-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; min-height: 60px; }
+        .rep-item { width: 60px; height: 60px; border: 2px solid var(--a); border-radius: 5px; overflow: hidden; position: relative; }
+        .rep-item img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* CAMBIO: Agrandé la fuente a 14px */
+        .rep-number { position: absolute; top: 0; left: 0; background: var(--a); color: #000; font-size: 14px; font-weight: bold; padding: 2px 6px; border-bottom-right-radius: 5px; z-index: 5; }
+
+        /* Admin */
+        .admin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 8px; margin: 15px 0; }
+        .admin-item { cursor: pointer; border: 2px solid transparent; position: relative; background: #000; border-radius: 5px; opacity: 0.6; }
+        .admin-item img { width: 100%; display: block; }
+        .admin-item.active { border-color: var(--a); opacity: 1; }
+        .admin-item.disabled { cursor: not-allowed; opacity: 0.2; filter: grayscale(1); }
+        .locks { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 2px; font-size: 16px; z-index: 10; }
+        .interchange-box { background: #3a3a5e; padding: 15px; border-radius: 10px; margin-top: 20px; border: 1px solid #5a5a7e; }
+        .interchange-row { display: flex; gap: 10px; margin-bottom: 10px; }
+        .interchange-row input { flex: 1; padding: 8px; border-radius: 5px; border: 1px solid #444; background: #222; color: #fff; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+    <!-- PANTALLA LOGIN -->
+    <div id="screen-login" class="screen active-screen login-screen">
+        <h1 id="title-main">Sab's Home Coleccionable</h1>
+        <p id="mode-text">Ingresa a tu álbum</p>
+        <input type="tel" id="phone-input" placeholder="Tu teléfono">
+        <input type="password" id="pin-input" placeholder="Crea tu PIN recuérdalo! (4 dígitos)" maxlength="4" style="display:none">
+        <input type="password" id="admin-pass" placeholder="Contraseña Admin" style="display:none">
+        <button id="btn-access" class="btn">Ingresar</button>
+        <p id="info-msg" style="font-size: 11px; margin-top: 10px; color: #aaa;"></p>
+    </div>
+
+    <!-- PANTALLA ÁLBUM -->
+    <div id="screen-album" class="screen container">
+        <h1>Llena el álbum y gánate una tabla para 6 💪</h1>
+        <div style="text-align:center; margin-bottom: 15px;">
+            <span id="display-name" style="font-weight:bold"></span> | 
+            <!-- CAMBIO: Corregido cerrar sesión para limpiar localStorage -->
+            <button onclick="logout()" class="btn btn-sm" style="background:#666">Cerrar Sesión</button>
+        </div>
+        
+        <!-- CAMBIO: Texto movido aquí afuera del panel -->
+        <p class="instructions-text">Toca cada figurita para descubrirla, vuelve a tocarla y cuando se ilumina, colócala en el álbum en el número correcto.</p>
+        
+        <div id="delivery-panel"></div>
+        <div class="album-grid" id="album-grid"></div>
+        <div class="repeated-section">
+            <h3>Mis Figuritas Repetidas</h3>
+            <div id="repeated-list" class="repeated-list"></div>
+            <button id="btn-whatsapp" class="btn" style="width:100%; background:#25d366">Intercambiar por WhatsApp</button>
+        </div>
+    </div>
+
+    <!-- PANTALLA ADMIN -->
+    <div id="screen-admin" class="screen container">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h1>Panel Administradora</h1>
+            <button onclick="fullReset()" class="btn" style="background:none; font-size:25px;">🚫</button>
+        </div>
+        <div id="integrity-alert" style="display:none; background:var(--d); color:white; padding:10px; border-radius:8px; margin-bottom:15px; text-align:center; font-weight:bold;">⚠️ ÁLBUM NO VÁLIDO: POSIBLE TRAMPA</div>
+        
+        <div style="background:#222244; padding:15px; border-radius:10px;">
+            <input type="tel" id="adm-phone" placeholder="Celular Cliente" style="padding:10px; width:45%;">
+            <input type="text" id="adm-name" placeholder="Nombre" style="padding:10px; width:45%;">
+            <button id="btn-load-adm" class="btn btn-sm" style="margin-top:10px; width:100%;">Cargar / Crear Cliente</button>
+        </div>
+
+        <div id="adm-controls" style="display:none; margin-top:20px;">
+            <div id="admin-grid" class="admin-grid"></div>
+            <button id="btn-give" class="btn" style="width:100%; background:#28a745">Entregar Seleccionadas</button>
+            
+            <div class="interchange-box">
+                <h4 style="margin:0 0 10px 0; text-align:center;">Intercambio Manual</h4>
+                <div class="interchange-row"><input type="tel" id="int-phone-a" placeholder="Cel A"><input type="number" id="int-num-a" placeholder="N° Fig A"></div>
+                <div class="interchange-row"><input type="tel" id="int-phone-b" placeholder="Cel B"><input type="number" id="int-num-b" placeholder="N° Fig B"></div>
+                <button id="btn-swap" class="btn btn-sm" style="width:100%; background:var(--s);">Ejecutar Intercambio</button>
+            </div>
+            <!-- CAMBIO: Asegurado que location.reload funcione -->
+            <button onclick="location.reload()" class="btn" style="width:100%; background:#666; margin-top:20px;">Salir del Administrador</button>
+        </div>
+    </div>
+
+    <script>
+        const _P = "KDApODYkKCkvMTI="; // Password (0)86$()/12
+        const WHATSAPP = "543464620200";
+        const TOTAL = 32;
+
+        let currentUser = null;
+        let selectedId = null;
+        let adminSelected = [];
+        let targetUser = null;
+        let isAdmMode = false;
+
+        function changeScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
+            document.getElementById(id).classList.add('active-screen');
+        }
+
+        function fullReset() {
+            if(confirm("🚫 ¿Borrar todos los datos del sistema?")) { localStorage.clear(); location.reload(); }
+        }
+
+        // CAMBIO: Nueva función logout
+        function logout() {
+            localStorage.removeItem('sabs_active');
+            location.reload();
+        }
+
+        function generateSign(user) { return btoa(user.phone + JSON.stringify(user.history)); }
+
+        window.onload = () => {
+            const active = localStorage.getItem('sabs_active');
+            if(active) {
+                const data = localStorage.getItem('sabs_' + active);
+                if(data) { currentUser = JSON.parse(data); showAlbum(); }
+            }
+        };
+
+        document.getElementById('title-main').addEventListener('dblclick', () => {
+            isAdmMode = true;
+            document.getElementById('admin-pass').style.display = 'block';
+            document.getElementById('mode-text').innerText = "MODO ADMINISTRADORA";
+        });
+
+        document.getElementById('btn-access').onclick = () => {
+            const phone = document.getElementById('phone-input').value.trim();
+            const pinIn = document.getElementById('pin-input').value.trim();
+            const passIn = document.getElementById('admin-pass').value.trim();
+
+            if (isAdmMode) {
+                if (passIn === atob(_P)) changeScreen('screen-admin');
+                else alert("Acceso Denegado");
+                return;
+            }
+
+            if (phone.length < 10) return alert("Ingresa 10 dígitos");
+
+            let data = localStorage.getItem('sabs_' + phone);
+            if (!data) {
+                if (!pinIn) {
+                    document.getElementById('pin-input').style.display = 'block';
+                    document.getElementById('info-msg').innerText = "Crea un PIN de 4 dígitos.";
+                    return;
+                }
+                currentUser = { phone, name: "Invitado", pin: pinIn, unlocked: [], placed: [], inventory: [], repeated: [], history: {}, sign: "" };
+                save(currentUser);
+                localStorage.setItem('sabs_active', phone);
+                showAlbum();
+            } else {
+                let user = JSON.parse(data);
+                if (!pinIn) {
+                    document.getElementById('pin-input').style.display = 'block';
+                    document.getElementById('info-msg').innerText = "Ingresa tu PIN.";
+                    return;
+                }
+                if (user.pin !== pinIn) return alert("PIN Incorrecto");
+                currentUser = user;
+                localStorage.setItem('sabs_active', phone);
+                showAlbum();
+            }
+        };
+
+        function save(user) { 
+            user.sign = generateSign(user);
+            localStorage.setItem('sabs_' + user.phone, JSON.stringify(user)); 
+        }
+
+        function showAlbum() {
+            changeScreen('screen-album');
+            document.getElementById('display-name').innerText = currentUser.name;
+            renderGrid(); renderInventory(); renderRepeated();
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('album-grid');
+            grid.innerHTML = '';
+            for (let i = 1; i <= TOTAL; i++) {
+                const id = 's' + i;
+                const slot = document.createElement('div');
+                slot.className = 'slot' + (currentUser.unlocked.includes(id) ? ' unlocked' : '');
+                // CAMBIADO A image/
+                slot.innerHTML = `<img src="image/${i}.jpg" class="preview"><div class="slot-num">${i}</div>`;
+                if (currentUser.placed.includes(id)) slot.innerHTML += `<img src="image/${i}.jpg" class="placed">`;
+                
+                slot.onclick = () => {
+                    if (selectedId === id) {
+                        // Nota: La lógica de repetidas ya se maneja principalmente en renderInventory,
+                        // pero mantenemos esto por si acaso la figurita es nueva y se coloca aquí.
+                        if (currentUser.placed.includes(id)) {
+                            // Esta condición difícilmente se cumpla aquí si manejamos la repetida en el panel
+                            // pero es un fallback seguro.
+                            currentUser.repeated.push(id);
+                        } else { currentUser.placed.push(id); }
+                        
+                        const idx = currentUser.inventory.indexOf(id);
+                        if(idx > -1) currentUser.inventory.splice(idx, 1);
+                        selectedId = null;
+                        save(currentUser); renderGrid(); renderInventory(); renderRepeated();
+                    }
+                };
+                grid.appendChild(slot);
+            }
+        }
+
+        function renderInventory() {
+            const panel = document.getElementById('delivery-panel');
+            panel.innerHTML = ''; // CAMBIO: Eliminada la lógica del texto interno
+            
+            currentUser.inventory.forEach(id => {
+                const n = id.replace('s','');
+                const card = document.createElement('div');
+                card.className = 'sticker-card' + (selectedId === id ? ' selected-to-paste' : '');
+                // CAMBIADO A image/
+                card.innerHTML = `<div class="sticker-inner"><div class="sticker-front">N° ${n}</div><div class="sticker-back"><img src="image/${n}.jpg"></div></div>`;
+                
+                card.onclick = () => {
+                    if (!card.classList.contains('flipped')) {
+                        card.classList.add('flipped');
+                    } else {
+                        // CAMBIO: Lógica para detectar repetida inmediatamente
+                        if (currentUser.placed.includes(id)) {
+                            alert("FIGURITA REPETIDA");
+                            currentUser.repeated.push(id);
+                            // Remover del inventario
+                            const idx = currentUser.inventory.indexOf(id);
+                            if(idx > -1) currentUser.inventory.splice(idx, 1);
+                            
+                            selectedId = null; // Deseleccionar si estaba seleccionada
+                            save(currentUser);
+                            renderInventory();
+                            renderRepeated();
+                        } else {
+                            // Si NO es repetida, comportamiento normal de selección
+                            selectedId = id; 
+                            renderInventory();
+                        }
+                    }
+                };
+                panel.appendChild(card);
+            });
+        }
+
+        function renderRepeated() {
+            const list = document.getElementById('repeated-list');
+            list.innerHTML = '';
+            currentUser.repeated.forEach(id => {
+                const n = id.replace('s','');
+                // CAMBIADO A image/
+                list.innerHTML += `<div class="rep-item"><div class="rep-number">${n}</div><img src="image/${n}.jpg"></div>`;
+            });
+        }
+
+        document.getElementById('adm-phone').oninput = (e) => {
+            const p = e.target.value.trim();
+            let data = localStorage.getItem('sabs_' + p);
+            if(data) document.getElementById('adm-name').value = JSON.parse(data).name;
+        };
+
+        document.getElementById('btn-load-adm').onclick = () => {
+            const p = document.getElementById('adm-phone').value.trim();
+            const n = document.getElementById('adm-name').value.trim();
+            if(!p) return alert("Teléfono requerido");
+            let data = localStorage.getItem('sabs_' + p);
+            targetUser = data ? JSON.parse(data) : { phone:p, name:n||"Cliente", pin:"1234", unlocked:[], placed:[], inventory:[], repeated:[], history:{} };
+            if(n) targetUser.name = n;
+            const currentSign = generateSign(targetUser);
+            document.getElementById('integrity-alert').style.display = (targetUser.sign && targetUser.sign !== currentSign) ? 'block' : 'none';
+            save(targetUser);
+            document.getElementById('adm-controls').style.display = 'block';
+            renderAdminGrid();
+        };
+
+        function renderAdminGrid() {
+            const grid = document.getElementById('admin-grid');
+            grid.innerHTML = ''; adminSelected = [];
+            for (let i = 1; i <= TOTAL; i++) {
+                const id = 's' + i;
+                const c = targetUser.history[id] || 0;
+                const div = document.createElement('div');
+                div.className = 'admin-item' + (c >= 2 ? ' disabled' : '');
+                let lks = c === 1 ? '🔒' : (c >= 2 ? '🔒🔒' : '');
+                // CAMBIADO A image/
+                div.innerHTML = `<img src="image/${i}.jpg"><div class="locks">${lks}</div><div style="text-align:center; color:#fff; font-size:10px;">#${i}</div>`;
+                if (c < 2) {
+                    div.onclick = () => {
+                        div.classList.toggle('active');
+                        if(div.classList.contains('active')) adminSelected.push(id);
+                        else adminSelected = adminSelected.filter(x => x !== id);
+                    };
+                }
+                grid.appendChild(div);
+            }
+        }
+
+        document.getElementById('btn-give').onclick = () => {
+            if(!adminSelected.length) return alert("Selecciona figs");
+            adminSelected.forEach(id => {
+                targetUser.history[id] = (targetUser.history[id] || 0) + 1;
+                targetUser.inventory.push(id);
+                if(!targetUser.unlocked.includes(id)) targetUser.unlocked.push(id);
+            });
+            save(targetUser); alert("¡Enviado!"); renderAdminGrid();
+        };
+
+        document.getElementById('btn-swap').onclick = () => {
+            const pA = document.getElementById('int-phone-a').value.trim();
+            const nA = 's' + document.getElementById('int-num-a').value.trim();
+            const pB = document.getElementById('int-phone-b').value.trim();
+            const nB = 's' + document.getElementById('int-num-b').value.trim();
+            let uA = JSON.parse(localStorage.getItem('sabs_'+pA));
+            let uB = JSON.parse(localStorage.getItem('sabs_'+pB));
+            if(!uA || !uB) return alert("Clientes no encontrados");
+            if(!uA.repeated.includes(nA)) return alert("A no tiene esa repetida");
+            if(!uB.repeated.includes(nB)) return alert("B no tiene esa repetida");
+            uA.repeated.splice(uA.repeated.indexOf(nA), 1); uB.inventory.push(nA);
+            if(!uB.unlocked.includes(nA)) uB.unlocked.push(nA);
+            uB.repeated.splice(uB.repeated.indexOf(nB), 1); uA.inventory.push(nB);
+            if(!uA.unlocked.includes(nB)) uA.unlocked.push(nB);
+            save(uA); save(uB); alert("Intercambio Realizado");
+            document.querySelectorAll('.interchange-box input').forEach(i => i.value = "");
+        };
+
+        document.getElementById('btn-whatsapp').onclick = () => {
+            if(!currentUser.repeated.length) return alert("No tienes repetidas.");
+            const list = [...new Set(currentUser.repeated)].map(x => x.replace('s','')).sort((a,b)=>a-b);
+            const text = `¡Hola! Tengo estas repetidas: ${list.join(', ')}`;
+            window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(text)}`);
+        };
+    </script>
+</body>
+</html>
+    
+  </body>
+  
+</html>
